@@ -115,6 +115,12 @@ Agents may accept decisions inside their task's scope on their own, such as hype
 - Decision: `validate_submission` reports inconsistency as a warning. Our own submissions stay consistent by construction (D-003). The writer derives clarity from evasion unless clarity labels are passed explicitly.
 - Evidence: crosstab of sample_output.csv subtask 1 against subtask 2 (34 of 296 inconsistent).
 
+## D-019: Folds built with StratifiedGroupKFold and pinned by fingerprint
+- Date: 2026-11-21 · Task: T0.4 · Status: Accepted · Decided by: agent (claude-raluca)
+- Decision: implement D-006 with `StratifiedGroupKFold(n_splits=7, shuffle=True, random_state=42)`, stratified on `evasion_label`, with groups = exact (question, answer) pair, so the 6 duplicate pairs never straddle folds. The sha256 of the sorted (datapointID, fold) table is `fe46fbf52f31d85849ce7bf1946b1c0359f1a6eb530e65084c97d776fa27c2fb`. It is pinned in tests/test_folds.py so that every member's folds are identical (D-017).
+- Evidence: fold sizes 468–469. Every class is within ±0.86 of its expected per-fold count (Clarification has 5–6 per fold).
+- Consequences: a change in sklearn's splitter (e.g. a version bump) would change the folds. The test catches that, and any such change needs a new decision.
+
 ---
 
 ## Open questions for the user

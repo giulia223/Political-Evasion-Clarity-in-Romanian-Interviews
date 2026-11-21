@@ -20,7 +20,7 @@ Update this file when you claim a task, finish it, or get blocked (rules in CLAU
 | T0.1 | Environment and dependencies | DONE | setup | 2026-11-21 | torch 2.15.0+cpu, transformers 5.23.0 and others (D-015). `tests/test_env.py` passes |
 | T0.2 | Repository skeleton | DONE | claude-setup | 2026-11-21 | `pip install -e .` works. Data checksums in tests/data_checksums.json. 4 tests pass |
 | T0.3 | Labels and submission writer/validator | DONE | claude-raluca | 2026-11-21 | `polero.labels`, `polero.submission` (+ CLI). sample_output.csv validates. 19 tests pass |
-| T0.4 | Data loading and fixed CV folds | IN_PROGRESS | claude-raluca | 2026-11-21 | |
+| T0.4 | Data loading and fixed CV folds | DONE | claude-raluca | 2026-11-21 | `artifacts/folds.csv` (`python -m polero.folds`). Fold sizes 468–469, every class within ±0.86 of expected per fold. Fingerprint `fe46fbf5…` |
 | T0.5 | Metrics and OOF evaluation | TODO | – | 2026-11-21 | |
 | T1.1 | EDA with tokenizers | TODO | – | 2026-11-21 | |
 | T1.2 | Text normalization | TODO | – | 2026-11-21 | |
@@ -57,3 +57,4 @@ Append-only, newest at the bottom. Format: `YYYY-MM-DD HH:MM · <agent> · <task
 - 2026-11-21 · claude-raluca · T0.3 · Claimed.
 - 2026-11-21 · claude-raluca · T0.3 · Done. labels.py (EVASION, CLARITY, CLARITY_OF, index maps, EVASION_GROUP), submission.py (write_submission, validate_submission, CLI). The validator rejects: wrong columns or order, row count, non-integer IDs, unknown subtask, duplicates, wrong block or row order, missing or extra IDs, invalid labels. Finding: sample_output.csv has 34 inconsistent clarity/evasion pairs, so the platform accepts inconsistency. It is a warning only (D-018). Full suite: 19 passed.
 - 2026-11-21 · claude-raluca · T0.4 · Claimed.
+- 2026-11-21 · claude-raluca · T0.4 · Done. polero.data (load_train/load_test with fixed dtypes and label checks, pair_groups) and polero.folds (StratifiedGroupKFold 7, seed 42, grouped by exact Q/A pair). 6 duplicate pairs (12 rows) share folds. The fold fingerprint is pinned in tests/test_folds.py (D-019). Full suite: 26 passed.
