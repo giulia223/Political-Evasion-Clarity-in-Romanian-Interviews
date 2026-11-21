@@ -153,6 +153,16 @@ Agents may accept decisions inside their task's scope on their own, such as hype
   - fertility changes by at most 0.00001. The acceptance test therefore allows a 0.1% fertility tolerance instead of a strict ≤, because the dash→hyphen mapping can shift a token boundary;
   - newlines are collapsed: BERT-style tokenizers already treat them as whitespace, so no information reaches the model.
 
+## D-023: Chunks built from a learned pair template instead of `return_overflowing_tokens`
+- Date: 2026-11-21 · Task: T2.1 · Status: Accepted · Decided by: agent (claude-raluca)
+- Context: the roadmap suggested HF pair encoding with `truncation="only_second"`, `return_overflowing_tokens=True`. That can't cap the question from its start, keep the end-aligned last window, or apply `max_chunks` selection. Also, transformers 5 fast tokenizers no longer have `build_inputs_with_special_tokens`.
+- Decision: `PairTemplate` learns the prefix, middle and suffix special tokens and token-type ids from one dummy pair encoding. Chunks are assembled from token ids:
+  - the question is capped at 192 tokens, keeping the end;
+  - answer windows overlap by 128 tokens, and the last window ends at the end of the answer;
+  - when there are more than 8 windows, the first, last and evenly spaced ones are kept.
+- Evidence: on 300 real train rows, the output is identical to `tok(q, a)` for every single-chunk row, for RoBERT-large, ro-BERT-base-cased and XLM-R-large. Full-data chunk counts match docs/EDA.md.
+- Consequences: the question appears in every chunk. The paper's chunk-once variant stays an ablation in T3.2(d).
+
 ---
 
 ## Open questions for the user
