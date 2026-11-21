@@ -1,6 +1,6 @@
 # ROADMAP: PolERo (Nitro NLP hackathon)
 
-Rules for working this roadmap are in `CLAUDE.md`. Live progress goes in `STATUS.md`, decisions in `DECISIONS.md`, and evidence in `docs/RESEARCH.md`.
+Rules for working this roadmap are in `CLAUDE.md`. Each team member works through the **whole** roadmap on their own branch `member/<name>` (D-017). Live progress goes in `STATUS.md`, decisions in `DECISIONS.md`, and evidence in `docs/RESEARCH.md`.
 
 **Goal:** maximise macro-F1 on Subtask 1 (clarity, 3 classes) and Subtask 2 (evasion, 9 classes) for the 296 test rows. Each subtask is worth 50 points.
 

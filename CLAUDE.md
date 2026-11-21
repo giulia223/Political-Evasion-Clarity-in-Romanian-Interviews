@@ -2,6 +2,8 @@
 
 This project is our team's entry for the Nitro NLP hackathon task **PolERo: Political Evasion & Clarity in Romanian Presidential Interviews**. Claude Code agents build it by following `ROADMAP.md`.
 
+**Team setup (D-017):** each of the 3 team members builds **their own complete version** of the whole roadmap, on their own git branch `member/<name>`, and trains their own models. Everyone follows the same instructions, roadmap and rules. The members don't split tasks between them. `main` holds only the shared instructions and the common skeleton (T0.1–T0.2). In this file, "the user" means the member who owns the branch you are working on.
+
 ## 1. The task, in brief
 - **Input:** a Romanian journalist question and the president's answer, plus metadata. Columns: `datapointID, title, date, president, url, context, question_order, interview_question, interview_answer`. `train_data.csv` (3,278 rows) also has `clarity_label` and `evasion_label`. `test_data.csv` has 296 rows and no labels.
 - **Subtask 1 (clarity, 3 classes, 50 points):** `Clear Reply`, `Ambivalent`, `Clear Non-Reply`.
@@ -23,7 +25,7 @@ This project is our team's entry for the Nitro NLP hackathon task **PolERo: Poli
   ```
 
 ## 2. Hard constraints (never break these)
-1. **Free compute only.** No paid services, no Hugging Face Jobs, Inference Endpoints or Providers, and no paid LLM APIs. Local CPU, plus free Kaggle or Colab GPUs run by the user (D-001).
+1. **Free compute only.** No paid services, no Hugging Face Jobs, Inference Endpoints or Providers, and no paid LLM APIs. Allowed: the member's own machine (CPU, or a local GPU if they have one), plus free Kaggle or Colab GPUs run by the member (D-001, D-017).
 2. **No credentials.** Never ask for, read, store or use tokens or API keys (HF, Kaggle, OpenAI and so on). Public models and datasets download without a token. If something seems to need one, stop and ask.
 3. **Ask before installing** any package or tool, and before any single download over 2 GB, such as LLM weights. Pin versions in `requirements.txt`. Never touch system Python. Use `.venv/bin/python` and `.venv/bin/pip`.
 4. **Never modify** `train_data.csv`, `test_data.csv` or `sample_output.csv`.
@@ -36,8 +38,11 @@ This project is our team's entry for the Nitro NLP hackathon task **PolERo: Poli
 11. **Leaderboard:** the public leaderboard is a sanity check, never the selection criterion (D-011).
 
 ## 3. How to work the roadmap
-1. **Start of every session:** read `CLAUDE.md`, then `STATUS.md`, the relevant `ROADMAP.md` task, `DECISIONS.md`, and `docs/RESEARCH.md` if you are designing.
-2. **Pick a task:** ask the user which track you are on (A, B or C, see `docs/TEAM.md`) if they haven't said. Then take the lowest-numbered `TODO` task **in that track** whose dependencies are all `DONE`. Work outside your track only with the owners' OK (docs/TEAM.md rule 2). Skip tasks marked `USER` until the user has answered. Parallel agents must pick tasks that don't edit the same files.
+1. **Start of every session:**
+   - check you are on the user's own `member/<name>` branch. If you are on `main` or the branch doesn't exist yet, follow §7 first;
+   - read `CLAUDE.md`, then `STATUS.md`, the relevant `ROADMAP.md` task, `DECISIONS.md`, and `docs/RESEARCH.md` if you are designing;
+   - `STATUS.md` and `DECISIONS.md` on a member branch belong to that member's version only.
+2. **Pick a task:** the lowest-numbered `TODO` task whose dependencies are all `DONE`. Skip tasks marked `USER` until the user has answered. If several agents work on the same branch at once, they must pick tasks that don't edit the same files.
 3. **Claim it before working:** in `STATUS.md`, set it to `IN_PROGRESS` with your agent name and the date, and add a log line. Work on one task at a time.
 4. **Scope:** do what the task describes. If you find the task needs a change (to scope, dependencies or acceptance), don't silently change it. Propose the change in DECISIONS.md and ask the user. Small fixes to earlier code are fine; note them in the log.
 5. **A task is Done only when all of these hold:**
@@ -56,17 +61,22 @@ This project is our team's entry for the Nitro NLP hackathon task **PolERo: Poli
 - **Open questions** for the user go in the "Open questions" list as `Q-0NN`.
 
 ## 5. GPU tasks (marked `GPU` in the roadmap)
-There is no GPU locally (16 CPU cores, 30 GB RAM).
+Each member chooses where their GPU work runs. Check with `.venv/bin/python -c "import torch; print(torch.cuda.is_available())"` and ask the member if unsure.
 
-**Agents:**
-1. Implement and smoke-test on CPU (`--smoke`).
-2. Package the code (`scripts/package_src.sh`).
-3. Write the exact run instructions: which notebook, config, folds and GPU type, and the expected runtime.
-4. Set the task to `AWAITING_USER`.
+**Local GPU** (if the member has one):
+- install the CUDA build of torch with the member's approval, and record it in STATUS.md;
+- run `python -m polero.train` directly;
+- the task completes without a hand-off.
 
-**The user:** runs the notebook on Kaggle or Colab and unzips the results into `artifacts/<exp_id>/`. An agent then verifies the artifacts (schema plus `polero.evaluate`) and completes the task.
+**No local GPU:** the work runs on a free Kaggle (or Colab) GPU under the member's own account.
+- **Agents:**
+  1. Implement and smoke-test on CPU (`--smoke`).
+  2. Package the code (`scripts/package_src.sh`).
+  3. Write the exact run instructions: which notebook, config, folds and GPU type, and the expected runtime.
+  4. Set the task to `AWAITING_USER`.
+- **The member:** runs the notebook and unzips the results into `artifacts/<exp_id>/`. An agent then verifies the artifacts (schema plus `polero.evaluate`) and completes the task.
 
-LLM inference (T3.4) also runs this way on Kaggle (D-013). Plan runs to fit the free tiers: Kaggle sessions are 12 hours and roughly 30 GPU-hours a week. Split folds across sessions if needed with `--folds`.
+LLM inference (T3.4) runs on Kaggle (D-013) unless the member has a local GPU big enough for it. Plan Kaggle runs to fit the free tier: Kaggle sessions are 12 hours and roughly 30 GPU-hours a week. Split folds across sessions if needed with `--folds`.
 
 ## 6. Code conventions
 - **Package and configs:** the code lives in `src/polero/`, installed editable. Experiments are JSON files in `configs/`, named `<backbone>_<variant>.json`. The experiment ID is the config name.
@@ -81,19 +91,26 @@ LLM inference (T3.4) also runs this way on Kaggle (D-013). Plan runs to fit the 
 - **Text:** keep Romanian diacritics. Normalization follows T1.2 and is logged per backbone.
 - **Style:** keep code short and readable. Comment only where something is not obvious.
 
-## 7. Git workflow (shared repo; several collaborators and agents)
-- **Remote:** `git@github.com:giulia223/Political-Evasion-Clarity-in-Romanian-Interviews.git`, branch `main`.
-- **Claiming a task:** run `git pull --rebase` first. Then commit and push the STATUS.md claim right away (`STATUS: claim T2.1`), so two agents never take the same task.
-- **Task work:** do it on a branch named `task/<ID>-<slug>` (e.g. `task/T2.1-chunking`).
-- **Finishing a task:**
-  1. Rebase on `main`.
-  2. Make sure the full test suite passes.
-  3. Merge into `main` (fast-forward) or open a PR if the user asks for reviews.
-  4. Push.
+## 7. Git workflow (one branch per member; D-017)
+- **Remote:** `git@github.com:giulia223/Political-Evasion-Clarity-in-Romanian-Interviews.git`.
+- **`main`:** shared instructions and skeleton only: `CLAUDE.md`, `ROADMAP.md`, `docs/RESEARCH.md`, `docs/IDEAS.md`, the setup, and the template `STATUS.md` and `DECISIONS.md`. Nobody does roadmap work on `main`.
+- **Creating your branch:** ask the member for their name if you don't know it. Then:
+  ```
+  git switch main
+  git pull
+  git switch -c member/<name>
+  git push -u origin member/<name>
+  ```
+  Then add a log line in STATUS.md saying the version was started.
+- **Daily work:** commit to `member/<name>`, or use short-lived task branches off it that you merge back. Push often, since the remote is the backup. The commit message starts with the task ID, e.g. `T2.1: sliding-window encoder with question repeated per chunk`.
+- **Changing shared instructions** (a roadmap fix, a CLAUDE.md rule, research notes):
+  1. Make the change on a branch off `main` (`docs/<slug>`).
+  2. Open a PR or merge it after the member approves.
+  3. Each member pulls it into their own branch with `git merge main`.
 
-  The commit message starts with the task ID, e.g. `T2.1: sliding-window encoder with question repeated per chunk`.
-- **STATUS.md, DECISIONS.md and RESULTS.md conflicts:** keep both sides. These files are append-only or one row per task.
-- **Never:** force-push, rewrite `main` history, or commit `.venv/`, `artifacts/`, model weights, notebook outputs with large blobs, or anything containing a secret.
+  Never merge a `member/*` branch into `main` or into another member's branch.
+- **Reading other versions** is fine (`git fetch`, `git diff main..origin/member/<other>`). Never commit to someone else's branch.
+- **Never:** force-push to `main` or someone else's branch, rewrite shared history, or commit `.venv/`, `artifacts/`, model weights, notebook outputs with large blobs, or anything containing a secret.
 
 ## 8. Skills available in `.claude/skills/`
 - `transformers`: loading models and tokenizers, the Trainer, fine-tuning. Ignore its Hub login and upload sections; we never log in or upload.

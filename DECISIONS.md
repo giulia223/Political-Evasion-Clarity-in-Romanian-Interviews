@@ -94,6 +94,21 @@ Agents may accept decisions inside their task's scope on their own, such as hype
 - Date: 2026-11-21 · Task: T0.2 · Status: Accepted · Decided by: user (answered Q-005)
 - Decision: `train_data.csv`, `test_data.csv` and `sample_output.csv` are committed at the repo root so all collaborators share the same files. They are read-only (CLAUDE.md §2.4), and T0.2 adds checksum tests that enforce this. This supersedes the data-exclusion part of D-014.
 
+## D-017: Each team member builds an independent version on their own branch
+- Date: 2026-11-21 · Task: all · Status: Accepted · Decided by: user
+- Context: a split of the roadmap into three per-person tracks was drafted (docs/TEAM.md) and then rejected by the user.
+- Decision:
+  - all 3 members follow the same CLAUDE.md and ROADMAP.md, and each builds the whole roadmap on their own branch `member/<name>`;
+  - each trains their own models, either locally (CPU, or their own GPU if they have one) or on free Kaggle GPUs under their own account;
+  - `main` holds only shared instructions and the T0.1–T0.2 skeleton;
+  - STATUS.md and DECISIONS.md on each branch track that member's version;
+  - instruction changes go to `main` and are merged into member branches.
+- Consequences:
+  - docs/TEAM.md is removed;
+  - CLAUDE.md §3, §5 and §7 are rewritten;
+  - D-001 is extended to allow a member's own local GPU;
+  - because everyone uses the same fixed folds (T0.4, seed 42) and the same artifact format (CLAUDE.md §6), the members' OOF and test probabilities stay directly comparable.
+
 ---
 
 ## Open questions for the user
