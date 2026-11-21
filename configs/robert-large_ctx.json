@@ -1,0 +1,19 @@
+{
+  "backbone": "readerbench/RoBERT-large",
+  "text_mode": "basic",
+  "context": "prev_q",
+  "context_words": 48,
+  "meta_prefix": true,
+  "q_max": 192,
+  "lr": 2e-05,
+  "epochs": 15,
+  "patience": 3,
+  "batch_examples": 16,
+  "token_budget": "auto",
+  "eval_token_budget": "auto",
+  "max_length": 512,
+  "stride": 128,
+  "max_chunks": 8,
+  "pooling": "max",
+  "seed": 42
+}

@@ -9,3 +9,6 @@ checkpoints/
 *.gguf
 .ipynb_checkpoints/
 .claude/settings.local.json
+dist/
+out/
+*.egg-info/

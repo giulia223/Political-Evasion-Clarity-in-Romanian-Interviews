@@ -1,0 +1,17 @@
+{
+  "backbone": "FacebookAI/xlm-roberta-large",
+  "text_mode": "cedilla",
+  "lr": 1e-05,
+  "epochs": 15,
+  "patience": 3,
+  "batch_examples": 16,
+  "token_budget": "auto",
+  "eval_token_budget": "auto",
+  "max_length": 512,
+  "stride": 128,
+  "q_max": 128,
+  "max_chunks": 8,
+  "pooling": "max",
+  "seed": 42,
+  "freeze_embeddings": true
+}

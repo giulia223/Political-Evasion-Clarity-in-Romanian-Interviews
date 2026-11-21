@@ -94,6 +94,40 @@ Agents may accept decisions inside their task's scope on their own, such as hype
 - Date: 2026-11-21 · Task: T0.2 · Status: Accepted · Decided by: user (answered Q-005)
 - Decision: `train_data.csv`, `test_data.csv` and `sample_output.csv` are committed at the repo root so all collaborators share the same files. They are read-only (CLAUDE.md §2.4), and T0.2 adds checksum tests that enforce this. This supersedes the data-exclusion part of D-014.
 
+## D-017: Folds are built over unique Q/A pairs
+- Date: 2026-11-21 · Task: T0.4 · Status: Accepted · Decided by: agent (ar/model_nitro)
+- Decision: 7-fold StratifiedKFold on `evasion_label`, seed 42, over the first occurrence of each exact (question, answer) pair; the 6 duplicates inherit their twin's fold. Stratifying on evasion gives every fold every class (Clarification: 5 per fold).
+- Evidence: fold sizes 467–471; every fold has every class; per-class counts are within ±1 of the expected share except where a duplicate adds one (`tests/test_folds.py`).
+
+## D-018: Chunking repeats the question in every chunk; template inferred from the tokenizer
+- Date: 2026-11-21 · Task: T2.1 · Status: Accepted · Decided by: agent
+- Decision: question capped at `q_max` tokens (truncated from the start), repeated in every chunk; answer windows of `max_length - specials - len(q)` tokens overlapping by `stride`; at most `max_chunks` chunks (first, last, evenly spaced). The special-token layout is inferred by encoding a probe pair, so BERT-style (RoBERT) and RoBERTa-style (XLM-R) tokenizers share one code path. This deviates from the paper (question only in chunk 1); T3.2 (d) may ablate it.
+- Evidence: EDA (docs/EDA.md): with RoBERT-large 3.6% of Q+A exceed 512 tokens; questions exceed 128 tokens in 5.6% of rows.
+
+## D-019: Normalization mode per backbone
+- Date: 2026-11-21 · Task: T1.2 · Status: Accepted · Decided by: agent
+- Decision: RoBERT-large `basic` (its tokenizer lowercases but keeps diacritics: `strip_accents=False`; UNK 0% in every mode); bert-base-romanian `basic` (cedilla would raise UNK to 9.8%); XLM-R-large `cedilla` (UNK 0% in all modes, fertility 1.493 vs 1.498). Diacritics are never stripped.
+- Evidence: docs/EDA.md tokenizer table (all 3,278 train rows).
+
+## D-020: Decoder and bias are chosen on nested OOF at submission time
+- Date: 2026-11-21 · Task: T2.4 · Status: Accepted · Decided by: agent
+- Decision: `polero.predict --decoder auto --bias auto` scores decoders a/b/c with and without per-class log-offset tuning; tuning is always evaluated with nested CV over the 7 folds (fit on 6, score the 7th). The best nested E+C is used for test, with the bias refit on all OOF rows. Every option keeps clarity consistent with evasion.
+
+## D-021: The platform sample file is not internally consistent
+- Date: 2026-11-21 · Task: T0.3 · Status: Accepted · Decided by: agent
+- Context: T0.3 assumed `sample_output.csv` is all Explicit. It is not: 278 Explicit plus other labels, and 34 rows where clarity does not match the evasion taxonomy.
+- Decision: the validator accepts it with a warning (format valid). Our own submissions are always consistent.
+
+## D-022: All training runs on free GPUs; local CPU training is not used
+- Date: 2026-11-21 · Task: T2.5 · Status: Accepted · Decided by: user (asked for Kaggle/Colab only), with agent evidence
+- Context: this machine (i5-12450H, 8 cores, 7.7 GB RAM, no NVIDIA GPU) is not the 16-core/30 GB machine in RESEARCH.md §6.
+- Evidence: one training step of RoBERT-small (19M parameters, 20×512 tokens) took ~47 s on this CPU, even though plain matmul runs at ~280 GFLOPS; a full CV run would take days.
+- Decision: everything is trained with `notebooks/kaggle_train.ipynb` (GPU T4 x2) or `notebooks/colab_train.ipynb` (T4), see docs/GPU_RUNBOOK.md. `token_budget: "auto"` sizes micro-batches from GPU memory (2,048 tokens on 16 GB for large models); precision is fp16 on T4/P100 and bf16 on Ampere+. XLM-R-large freezes its 250k-row word-embedding matrix (`freeze_embeddings`) to save ~4 GB of optimizer state on 16 GB GPUs. Interrupted runs resume per fold (`--skip-done`).
+
+## D-023: Windows paths for the local environment
+- Date: 2026-11-21 · Task: T0.1 · Status: Accepted · Decided by: agent
+- Decision: on Windows the venv tools are `.venv\Scripts\python.exe` / `pip.exe` (CLAUDE.md shows the Linux `.venv/bin/...` form). The same pinned `requirements.txt` installs on Windows with Python 3.14. Data checksums are computed with CRLF normalised to LF so they match with or without git `core.autocrlf`.
+
 ---
 
 ## Open questions for the user
