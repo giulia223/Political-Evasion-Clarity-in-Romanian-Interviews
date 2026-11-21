@@ -109,6 +109,12 @@ Agents may accept decisions inside their task's scope on their own, such as hype
   - D-001 is extended to allow a member's own local GPU;
   - because everyone uses the same fixed folds (T0.4, seed 42) and the same artifact format (CLAUDE.md §6), the members' OOF and test probabilities stay directly comparable.
 
+## D-018: Clarity/evasion inconsistency is a validator warning, not an error
+- Date: 2026-11-21 · Task: T0.3 · Status: Accepted · Decided by: agent (claude-raluca)
+- Context: the roadmap assumed sample_output.csv was fully consistent. In fact it has 34 rows where the clarity label differs from CLARITY_OF[evasion] (e.g. Explicit with Ambivalent), so the platform format allows inconsistent pairs.
+- Decision: `validate_submission` reports inconsistency as a warning. Our own submissions stay consistent by construction (D-003). The writer derives clarity from evasion unless clarity labels are passed explicitly.
+- Evidence: crosstab of sample_output.csv subtask 1 against subtask 2 (34 of 296 inconsistent).
+
 ---
 
 ## Open questions for the user
