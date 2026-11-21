@@ -28,7 +28,7 @@ Update this file when you claim a task, finish it, or get blocked (rules in CLAU
 | T2.2 | Multi-head model | DONE | claude-raluca | 2026-11-21 | `polero.model.MultiHeadChunkClassifier`: CLS per chunk → max/mean/attention pool → dropout → heads 3+9. CE (default), weighted, focal, label smoothing |
 | T2.3 | Training loop with CV | DONE | claude-raluca | 2026-11-21 | `python -m polero.train --config configs/robert-large_mh.json [--folds] [--smoke]`. Smoke: 7 folds in ~6 s on CPU. GPU/AMP path not yet run (T2.5/T2.6) |
 | T2.4 | Prediction, ensembling, decoding | DONE | claude-raluca | 2026-11-21 | `python -m polero.predict --exp <id> [--decoder auto]`: decoders a/b/c and nested bias tuning on OOF, validated submission. Real decoder table pending first GPU run |
-| T2.5 | GPU runner notebook and runbook | TODO | – | 2026-11-21 | |
+| T2.5 | GPU runner notebook and runbook | IN_PROGRESS | claude-raluca | 2026-11-21 | |
 | T2.6 | Backbone screening (GPU) | TODO | – | 2026-11-21 | |
 | T2.7 | Full 7-fold run (GPU) | TODO | – | 2026-11-21 | |
 | T2.8 | First real submission | TODO | – | 2026-11-21 | |
@@ -73,3 +73,4 @@ Append-only, newest at the bottom. Format: `YYYY-MM-DD HH:MM · <agent> · <task
 - 2026-11-21 · claude-raluca · T2.3 · Done. polero.train: TrainConfig (JSON, unknown keys rejected), AdamW with no decay on bias/LayerNorm, linear warmup 10% and decay, clip 1.0, AMP (auto: bf16 or fp16 with GradScaler on CUDA, fp32 on CPU), chunk-budget micro-batches with gradient accumulation to batch_examples, early stopping (patience 3) on val evasion F1 + mapped clarity F1, best state kept in memory. Per-fold oof/test/metrics files; oof.csv merged across runs. polero.smoke: offline deterministic tiny tokenizer and BERT. configs/robert-large_mh.json is the default config. The GPU precision path is untested until the first Kaggle run (T2.5/T2.6). Full suite: 83 passed (D-024).
 - 2026-11-21 · claude-raluca · T2.4 · Claimed.
 - 2026-11-21 · claude-raluca · T2.4 · Done. polero.ensemble: blend (weighted, aligned on datapointID), load_test (fold average), decode a/b/c (consistent by construction), a fast sklearn-equivalent macro-F1, per-class log-prob bias tuning (coordinate ascent, Explicit fixed at 0), alpha tuning for c, nested_predict (parameters from the other folds only), compare_decoders. polero.predict CLI: decoder table plus test-vs-train prediction distribution, write_submission and validate, --log to RESULTS.md, --decoder auto picks the best nested row. Verified end to end on a full-size smoke experiment. Real numbers come after T2.7. Full suite: 92 passed (D-025).
+- 2026-11-21 · claude-raluca · T2.5 · Claimed.
