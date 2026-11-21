@@ -13,7 +13,7 @@ This project is our team's entry for the Nitro NLP hackathon task **PolERo: Poli
 - **Metric:** macro-F1 per subtask. Test labels come from 3 annotators. For evasion, a prediction counts as correct if it matches any annotator. For clarity, it must match the exact majority label.
 - **Submission:** the format of `sample_output.csv`, which is `subtaskID,datapointID,answer`. It has 592 rows: the 296 Subtask 1 rows first, then the 296 Subtask 2 rows, in the order of `test_data.csv`. Labels must be the exact strings above. See D-002.
 - **Background and evidence:** `docs/RESEARCH.md`. Read it before designing anything.
-- **Data files:** the three CSVs are not in git (D-014). Each collaborator copies them to the repo root. If they are missing, stop and ask the user.
+- **Data files:** the three CSVs are committed at the repo root (D-016). Never modify them.
 - **Environment setup:**
   ```
   python3 -m venv .venv
@@ -92,7 +92,7 @@ LLM inference (T3.4) also runs this way on Kaggle (D-013). Plan runs to fit the 
 
   The commit message starts with the task ID, e.g. `T2.1: sliding-window encoder with question repeated per chunk`.
 - **STATUS.md, DECISIONS.md and RESULTS.md conflicts:** keep both sides. These files are append-only or one row per task.
-- **Never:** force-push, rewrite `main` history, or commit data CSVs, `.venv/`, `artifacts/`, model weights, notebook outputs with large blobs, or anything containing a secret.
+- **Never:** force-push, rewrite `main` history, or commit `.venv/`, `artifacts/`, model weights, notebook outputs with large blobs, or anything containing a secret.
 
 ## 8. Skills available in `.claude/skills/`
 - `transformers`: loading models and tokenizers, the Trainer, fine-tuning. Ignore its Hub login and upload sections; we never log in or upload.

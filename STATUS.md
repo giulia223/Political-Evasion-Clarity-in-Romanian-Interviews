@@ -41,9 +41,10 @@ Update this file when you claim a task, finish it, or get blocked (rules in CLAU
 | T4.2 | Write-up | TODO | – | 2026-11-21 | |
 
 ## Waiting on the user
-- Q-005: should the data CSVs be committed? (DECISIONS.md)
+- (nothing pending)
 
 ## Log
 Append-only, newest at the bottom. Format: `YYYY-MM-DD HH:MM · <agent> · <task> · <what happened, with numbers and artifact paths>`
 - 2026-11-21 · setup · none · Installed skills (D-010), created `.venv` (D-009). Built and removed the TF-IDF baseline (D-007). Wrote the roadmap, CLAUDE.md, DECISIONS.md, STATUS.md and docs/RESEARCH.md.
 - 2026-11-21 · setup · T0.1 · The user approved the installs. Pinned the stack in requirements.txt (D-015). tests/test_env.py: 2 passed. Recorded the user's answers as D-011 to D-014. T3.3 dropped, T3.4 moved to Kaggle. Initial commit pushed to GitHub.
+- 2026-11-21 · setup · none · The user asked to commit the data CSVs (D-016).

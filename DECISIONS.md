@@ -82,13 +82,17 @@ Agents may accept decisions inside their task's scope on their own, such as hype
 - Decision: LLM inference runs inside a Kaggle notebook on a free GPU, following the GPU workflow in CLAUDE.md §5. LLM weights are downloaded inside Kaggle, not on the local machine.
 
 ## D-014: Shared GitHub repository; data files are not committed
-- Date: 2026-11-21 · Task: T0.2 · Status: Accepted (data exclusion is Proposed, pending user confirmation) · Decided by: user (repo) and agent (data exclusion)
+- Date: 2026-11-21 · Task: T0.2 · Status: Repo part Accepted; data exclusion Superseded by D-016 · Decided by: user (repo) and agent (data exclusion)
 - Decision: the remote is `git@github.com:giulia223/Political-Evasion-Clarity-in-Romanian-Interviews.git`, branch `main`. The hackathon CSVs (`train_data.csv`, `test_data.csv`, `sample_output.csv`) are excluded through `.gitignore`. Each collaborator places them at the repo root. Also never committed: `.venv/`, `artifacts/`, model weights.
 - Rationale: competition data may not be redistributable, and the repo could be public. The user can reverse this.
 
 ## D-015: Pinned local environment (T0.1)
 - Date: 2026-11-21 · Task: T0.1 · Status: Accepted · Decided by: user approved the installs
 - Decision: Python 3.14 `.venv` with torch 2.15.0+cpu (CPU index), transformers 5.23.0, sentencepiece 0.2.3, accelerate 1.16.0, scikit-learn 1.9.1, pandas 3.1.1, numpy 2.5.5, pytest 9.2.0, all pinned in `requirements.txt`. On Kaggle and Colab, keep the preinstalled CUDA torch and install the rest. Note that the transformers skill was written for 5.18; check for API differences.
+
+## D-016: Data CSVs are committed to the repo
+- Date: 2026-11-21 · Task: T0.2 · Status: Accepted · Decided by: user (answered Q-005)
+- Decision: `train_data.csv`, `test_data.csv` and `sample_output.csv` are committed at the repo root so all collaborators share the same files. They are read-only (CLAUDE.md §2.4), and T0.2 adds checksum tests that enforce this. This supersedes the data-exclusion part of D-014.
 
 ---
 
@@ -97,4 +101,4 @@ Agents may accept decisions inside their task's scope on their own, such as hype
 - ~~Q-002~~ Answered: no external data (D-012).
 - ~~Q-003~~ Answered: Kaggle GPU (D-013).
 - ~~Q-004~~ Answered: existing GitHub repo (D-014).
-- **Q-005:** Should the hackathon CSVs be committed to the repo? They are excluded for now (D-014).
+- ~~Q-005~~ Answered: yes, commit them (D-016).

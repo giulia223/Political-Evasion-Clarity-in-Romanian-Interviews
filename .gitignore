@@ -9,7 +9,3 @@ checkpoints/
 *.gguf
 .ipynb_checkpoints/
 .claude/settings.local.json
-# Hackathon data: kept local and shared outside git (see CLAUDE.md §1)
-train_data.csv
-test_data.csv
-sample_output.csv
