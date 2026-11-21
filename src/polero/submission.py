@@ -1,5 +1,5 @@
 """Write and validate submissions in the platform format (sample_output.csv, D-002).
-
+yes
 Format: columns subtaskID,datapointID,answer; 296 clarity rows (subtaskID 1) then
 296 evasion rows (subtaskID 2), each block in test_data.csv order.
 
