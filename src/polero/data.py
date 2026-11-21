@@ -41,3 +41,13 @@ def load_test(path=TEST_CSV):
 def pair_groups(df):
     """Integer group id per row; exact-duplicate (question, answer) pairs share an id."""
     return df.groupby(["interview_question", "interview_answer"], sort=False).ngroup().to_numpy()
+
+
+def event_dates(df):
+    """Parse `date`, which mixes YYYY-MM-DD and DD.MM.YYYY (presidency.ro 2015+). Raises if any fail."""
+    iso = pd.to_datetime(df.date, format="%Y-%m-%d", errors="coerce")
+    dotted = pd.to_datetime(df.date, format="%d.%m.%Y", errors="coerce")
+    out = iso.fillna(dotted)
+    if out.isna().any():
+        raise ValueError(f"unparseable dates: {df.date[out.isna()].unique()[:5].tolist()}")
+    return out

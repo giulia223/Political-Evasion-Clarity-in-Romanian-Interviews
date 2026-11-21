@@ -129,6 +129,18 @@ Agents may accept decisions inside their task's scope on their own, such as hype
   - `evaluate_oof` also reports `grouped_clarity_f1` (decoder b from T2.4) so the decoders can be compared from the first experiment onward.
 - Alternatives: averaging over all 9 classes even when absent from both gold and predictions. Rejected because it differs from sklearn and only matters for partial or toy files.
 
+## D-021: Chunking parameters and normalization direction from EDA
+- Date: 2026-11-21 · Task: T1.1 → T1.2, T2.1 · Status: Accepted · Decided by: agent (claude-raluca)
+- Decision:
+  - **T2.1 defaults:** `max_length` 512; question cap **192** tokens, keeping the end (the roadmap said 128); answer overlap **128**; `max_chunks` 8;
+  - **T1.2 direction:** keep the comma-below diacritics (no cedilla conversion); map `–` and `‑` to `-`, `ť Ť` to `ț Ț`, nbsp and tab to a space, and collapse repeated spaces. Quote mapping is optional.
+- Evidence (docs/EDA.md):
+  - **question cap:** 128 truncates 199 questions, 192 truncates 59, for +16 chunks in total;
+  - **overlap:** 256 needs 3,931 chunks against 3,776 for 128;
+  - **cedilla:** raises ro-BERT's UNK rate from 0.04% to 9.3%;
+  - **ro-BERT UNKs:** the en dash accounts for 183 of the 194 unknown characters.
+- Consequences: T2.1 uses these defaults, all configurable. T1.2 implements and verifies the mapping.
+
 ---
 
 ## Open questions for the user

@@ -66,3 +66,11 @@ def test_duplicates_share_a_fold(train, folds):
 def test_load_folds_matches(tmp_path, folds):
     saved = load_folds(tmp_path / "folds.csv")  # builds the file when missing
     assert saved.equals(folds)
+
+
+def test_event_dates_parse_both_formats(train):
+    from polero.data import event_dates
+    for df in (train, load_test()):
+        d = event_dates(df)
+        assert d.notna().all() and d.dt.year.between(2001, 2026).all()
+    assert (train.date.str.contains(".", regex=False)).sum() == 1402  # DD.MM.YYYY rows (docs/EDA.md)
