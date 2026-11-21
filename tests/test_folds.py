@@ -4,11 +4,10 @@ import pytest
 
 from polero import TRAIN_CSV
 from polero.data import load_test, load_train, pair_groups
-from polero.folds import N_FOLDS, fingerprint, load_folds, make_folds
+from polero.folds import EXPECTED_FINGERPRINT, N_FOLDS, fingerprint, load_folds, make_folds
 
-# Fold assignment fingerprint (sklearn 1.9.1, seed 42). If this changes, every member's
-# OOF numbers stop being comparable: do not update it without a DECISIONS.md entry.
-EXPECTED_FINGERPRINT = "fe46fbf52f31d85849ce7bf1946b1c0359f1a6eb530e65084c97d776fa27c2fb"
+# EXPECTED_FINGERPRINT (sklearn 1.9.1, seed 42) lives in polero.folds. If it changes, every
+# member's OOF numbers stop being comparable: do not update it without a DECISIONS.md entry.
 
 
 @pytest.fixture(scope="module")

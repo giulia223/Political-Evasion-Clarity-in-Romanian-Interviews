@@ -8,7 +8,7 @@ Outputs in artifacts/<exp_id>/ (exp_id = config file name; smoke runs use <exp_i
   fold{k}/oof.csv        validation-fold probabilities of the best epoch
   test_fold{k}.csv       test probabilities of the fold's best epoch
   oof.csv                merge of every fold{k}/oof.csv present (resumed runs add to it)
-  train.log
+  train.log              (train_folds<ids>.log when --folds is given)
 """
 import argparse
 import copy
@@ -259,10 +259,12 @@ def merge_oof(out_dir):
     return oof
 
 
-def run(cfg, exp_id, folds_to_run=None, out_dir=None):
+def run(cfg, exp_id, folds_to_run=None, out_dir=None, merge=True):
+    """merge=False skips writing oof.csv (parallel per-GPU processes; merge once at the end)."""
     out_dir = Path(out_dir or ARTIFACTS / exp_id)
     out_dir.mkdir(parents=True, exist_ok=True)
-    handler = logging.FileHandler(out_dir / "train.log")
+    log_name = "train.log" if folds_to_run is None else f"train_folds{'-'.join(map(str, folds_to_run))}.log"
+    handler = logging.FileHandler(out_dir / log_name)
     handler.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
     log.addHandler(handler)
     log.setLevel(logging.INFO)
@@ -286,7 +288,8 @@ def run(cfg, exp_id, folds_to_run=None, out_dir=None):
         ks = [int(k) for k in (folds_to_run if folds_to_run is not None else sorted(set(folds)))]
         log.info(f"{exp_id}: backbone {cfg.backbone}, device {device}, folds {ks}, {sum(e['n_kept'] for e in examples)} train chunks")
         results = [train_fold(k, cfg, train, test, folds, examples, test_examples, tok, encoder, out_dir, device) for k in ks]
-        merge_oof(out_dir)
+        if merge:
+            merge_oof(out_dir)
         return results
     finally:
         log.removeHandler(handler)
@@ -299,6 +302,7 @@ def main(argv=None):
     ap.add_argument("--folds", help="comma-separated fold ids (default: all)")
     ap.add_argument("--smoke", action="store_true", help="tiny offline model, 64 rows, 2 steps (CPU, < 2 min)")
     ap.add_argument("--out-dir", type=Path)
+    ap.add_argument("--no-merge", action="store_true", help="don't write oof.csv (for parallel per-GPU runs)")
     args = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(message)s", stream=sys.stdout)
     cfg = TrainConfig.from_json(args.config)
@@ -307,7 +311,7 @@ def main(argv=None):
         cfg = dataclasses.replace(cfg, **SMOKE)
         exp_id += "_smoke"
     folds = [int(f) for f in args.folds.split(",")] if args.folds else None
-    run(cfg, exp_id, folds, args.out_dir)
+    run(cfg, exp_id, folds, args.out_dir, merge=not args.no_merge)
     return 0
 
 

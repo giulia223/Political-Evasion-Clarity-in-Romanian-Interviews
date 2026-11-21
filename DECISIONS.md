@@ -186,6 +186,16 @@ Agents may accept decisions inside their task's scope on their own, such as hype
   - **Default selection:** `--decoder auto` picks the best nested row. The final parameters are refitted on all OOF rows and applied to test.
 - Consequences: the D-003 consistency requirement holds for every option, so no user decision about inconsistent decoders is needed. Bias tuning uses train-fold labels only, never test (CLAUDE.md §2.5).
 
+## D-026: Kaggle execution design
+- Date: 2026-11-21 · Task: T2.5 · Status: Accepted · Decided by: agent (claude-raluca)
+- Decision:
+  - **Code transfer:** the code reaches Kaggle as a private Dataset zip built by `scripts/package_src.sh`. This works for a private repo and needs no credentials or `git clone` inside Kaggle.
+  - **Fixed folds:** the zip ships `artifacts/folds.csv`, and the runner refuses to train if its fingerprint differs from `EXPECTED_FINGERPRINT`. Kaggle's sklearn version therefore can't change the folds.
+  - **Parallel GPUs:** on T4×2, folds are split round-robin across GPUs and run as parallel processes (`CUDA_VISIBLE_DEVICES`, `--no-merge`). OOF is merged once at the end.
+  - **Installs:** the pinned requirements are installed, except torch, where the platform's CUDA build is kept. `INSTALL="minimal"` is the fallback.
+  - **Packaging source:** the zip is built from the working tree (tracked plus new non-ignored files), and VERSION marks `+dirty` builds so every run stays traceable.
+- Consequences: each member uploads their own `polero-src` dataset from their own branch and Kaggle account (D-017).
+
 ---
 
 ## Open questions for the user

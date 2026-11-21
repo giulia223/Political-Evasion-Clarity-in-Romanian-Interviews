@@ -13,6 +13,8 @@ from polero.data import load_train, pair_groups
 
 N_FOLDS = 7
 FOLDS_CSV = ARTIFACTS / "folds.csv"
+# sha256 of the sorted (datapointID, fold) table (D-019). Every member and every GPU run must match it.
+EXPECTED_FINGERPRINT = "fe46fbf52f31d85849ce7bf1946b1c0359f1a6eb530e65084c97d776fa27c2fb"
 
 
 def make_folds(train=None, n_folds=N_FOLDS, seed=SEED):
