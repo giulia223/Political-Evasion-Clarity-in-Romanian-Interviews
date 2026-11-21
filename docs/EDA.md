@@ -170,3 +170,24 @@ Notes on the numbers above:
 - **The previous turn's label is a weak signal:** P(Clear Reply) is .577 after a Clear Reply versus .500–.506 otherwise. This supports the roadmap's advice to avoid using neighbour labels.
 - **Metadata is a strong prior.** Interviews are 63% Clear Reply, against 46% for declarations and press conferences. The 2015–2026 period has about 3× the Clear Non-Reply rate of 2001–2007 (11.6% vs 3.9%). The president follows the same split: Iliescu and Băsescu are about 62% Clear Reply, Iohannis and Dan about 46%. A short metadata prefix (context type plus period) is the most promising T3.2 variant.
 
+## 8. Normalization check (T1.2)
+
+Measured on all questions and answers (train + test) with `polero.text.normalize`:
+
+| tokenizer | mode | UNK rate | fertility |
+|---|---|---|---|
+| RoBERT-large | raw | 0.00000 | 1.48852 |
+| RoBERT-large | clean | 0.00000 | 1.48852 |
+| RoBERT-large | clean+quotes | 0.00000 | 1.48852 |
+| ro-BERT-base-cased | raw | 0.00041 | 1.23279 |
+| ro-BERT-base-cased | clean | 0.00001 | 1.23280 |
+| ro-BERT-base-cased | clean+quotes | 0.00001 | 1.23280 |
+| XLM-R-large | raw | 0.00000 | 1.49799 |
+| XLM-R-large | clean | 0.00000 | 1.49798 |
+| XLM-R-large | clean+quotes | 0.00000 | 1.49793 |
+
+**Chosen mode: `clean` for every backbone** (`polero.text.BACKBONE_MODE`).
+- It removes 98% of Romanian BERT's UNKs; the rest are `ê` and `ğ` in foreign names.
+- It leaves fertility unchanged within 0.001%.
+- Mapping quotes as well (`clean+quotes`) makes no measurable difference, so it isn't used.
+

@@ -141,6 +141,18 @@ Agents may accept decisions inside their task's scope on their own, such as hype
   - **ro-BERT UNKs:** the en dash accounts for 183 of the 194 unknown characters.
 - Consequences: T2.1 uses these defaults, all configurable. T1.2 implements and verifies the mapping.
 
+## D-022: Normalization mode `clean` for every backbone
+- Date: 2026-11-21 · Task: T1.2 · Status: Accepted · Decided by: agent (claude-raluca)
+- Decision: all backbones (RoBERT-large/base, ro-BERT-base-cased, XLM-R-large) use `normalize(text, "clean")`. It maps dashes to `-` and `ť Ť` to `ț Ț`, collapses every whitespace run (nbsp, tab, newline) to one space, and strips. Diacritics and case are never changed. Quotes are left alone.
+- Alternatives:
+  - `clean+quotes`: no measurable effect, so the simpler mode was kept;
+  - cedilla conversion: rejected in D-021;
+  - lowercasing: RoBERT does it internally, and the cased models need the case.
+- Evidence (docs/EDA.md §8):
+  - ro-BERT UNK rate 0.041% → 0.001%; RoBERT and XLM-R stay at 0 UNKs;
+  - fertility changes by at most 0.00001. The acceptance test therefore allows a 0.1% fertility tolerance instead of a strict ≤, because the dash→hyphen mapping can shift a token boundary;
+  - newlines are collapsed: BERT-style tokenizers already treat them as whitespace, so no information reaches the model.
+
 ---
 
 ## Open questions for the user
