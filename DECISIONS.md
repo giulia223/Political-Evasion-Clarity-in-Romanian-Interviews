@@ -121,6 +121,14 @@ Agents may accept decisions inside their task's scope on their own, such as hype
 - Evidence: fold sizes 468–469. Every class is within ±0.86 of its expected per-fold count (Clarification has 5–6 per fold).
 - Consequences: a change in sklearn's splitter (e.g. a version bump) would change the folds. The test catches that, and any such change needs a new decision.
 
+## D-020: Macro-F1 definition and OOF file format
+- Date: 2026-11-21 · Task: T0.5 · Status: Accepted · Decided by: agent (claude-raluca)
+- Decision:
+  - macro-F1 is exactly `sklearn.metrics.f1_score(average="macro", zero_division=0)`: averaged over the union of gold and predicted classes, with a never-predicted class scoring 0. This is the standard definition and the most likely platform scorer;
+  - OOF and test probability columns are `datapointID`, `p_ev_<exact evasion label>` ×9 and, optionally, `p_cl_<exact clarity label>` ×3. Rows must sum to 1 (tolerance 1e-3);
+  - `evaluate_oof` also reports `grouped_clarity_f1` (decoder b from T2.4) so the decoders can be compared from the first experiment onward.
+- Alternatives: averaging over all 9 classes even when absent from both gold and predictions. Rejected because it differs from sklearn and only matters for partial or toy files.
+
 ---
 
 ## Open questions for the user
