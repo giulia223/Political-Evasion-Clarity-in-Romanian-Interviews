@@ -19,6 +19,7 @@ This project is our team's entry for the Nitro NLP hackathon task **PolERo: Poli
   python3 -m venv .venv
   .venv/bin/pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu
   .venv/bin/pip install -r requirements.txt
+  .venv/bin/pip install -e .
   ```
 
 ## 2. Hard constraints (never break these)
@@ -36,7 +37,7 @@ This project is our team's entry for the Nitro NLP hackathon task **PolERo: Poli
 
 ## 3. How to work the roadmap
 1. **Start of every session:** read `CLAUDE.md`, then `STATUS.md`, the relevant `ROADMAP.md` task, `DECISIONS.md`, and `docs/RESEARCH.md` if you are designing.
-2. **Pick a task:** the lowest-numbered `TODO` task whose dependencies are all `DONE`. Skip tasks marked `USER` until the user has answered. Parallel agents must pick tasks that don't edit the same files.
+2. **Pick a task:** ask the user which track you are on (A, B or C, see `docs/TEAM.md`) if they haven't said. Then take the lowest-numbered `TODO` task **in that track** whose dependencies are all `DONE`. Work outside your track only with the owners' OK (docs/TEAM.md rule 2). Skip tasks marked `USER` until the user has answered. Parallel agents must pick tasks that don't edit the same files.
 3. **Claim it before working:** in `STATUS.md`, set it to `IN_PROGRESS` with your agent name and the date, and add a log line. Work on one task at a time.
 4. **Scope:** do what the task describes. If you find the task needs a change (to scope, dependencies or acceptance), don't silently change it. Propose the change in DECISIONS.md and ask the user. Small fixes to earlier code are fine; note them in the log.
 5. **A task is Done only when all of these hold:**

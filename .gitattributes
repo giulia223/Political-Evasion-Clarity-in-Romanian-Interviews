@@ -1,0 +1,2 @@
+# Keep data byte-identical on every OS (checksums in tests/data_checksums.json)
+*.csv -text
