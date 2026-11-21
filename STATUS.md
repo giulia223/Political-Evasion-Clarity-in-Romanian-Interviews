@@ -22,7 +22,7 @@ Update this file when you claim a task, finish it, or get blocked (rules in CLAU
 | T0.3 | Labels and submission writer/validator | DONE | claude-raluca | 2026-11-21 | `polero.labels`, `polero.submission` (+ CLI). sample_output.csv validates. 19 tests pass |
 | T0.4 | Data loading and fixed CV folds | DONE | claude-raluca | 2026-11-21 | `artifacts/folds.csv` (`python -m polero.folds`). Fold sizes 468–469, every class within ±0.86 of expected per fold. Fingerprint `fe46fbf5…` |
 | T0.5 | Metrics and OOF evaluation | DONE | claude-raluca | 2026-11-21 | `polero.metrics`, `python -m polero.evaluate <oof.csv>` → oof_metrics.json + row in docs/RESULTS.md. 38 tests pass |
-| T1.1 | EDA with tokenizers | TODO | – | 2026-11-21 | |
+| T1.1 | EDA with tokenizers | IN_PROGRESS | claude-raluca | 2026-11-21 | |
 | T1.2 | Text normalization | TODO | – | 2026-11-21 | |
 | T2.1 | Sliding-window encoding | TODO | – | 2026-11-21 | |
 | T2.2 | Multi-head model | TODO | – | 2026-11-21 | |
@@ -61,3 +61,4 @@ Append-only, newest at the bottom. Format: `YYYY-MM-DD HH:MM · <agent> · <task
 - 2026-11-21 · claude-raluca · none · Restored src/polero/submission.py to the committed version, with the user's OK (a stray indent broke the import).
 - 2026-11-21 · claude-raluca · T0.5 · Claimed.
 - 2026-11-21 · claude-raluca · T0.5 · Done. polero.metrics: evasion_f1, clarity_f1, mapped_clarity_f1, per_class_report (with a predicted-count column), confusion, evaluate_oof. evaluate_oof reports evasion, mapped clarity (decoder a), grouped clarity (decoder b) and the clarity head. It validates columns, probability sums, duplicate and unknown IDs. Macro-F1 = sklearn default (union of classes, never-predicted = 0; D-020). polero.evaluate CLI. docs/RESULTS.md created (header only, no results yet). Full suite: 38 passed.
+- 2026-11-21 · claude-raluca · T1.1 · Claimed.
