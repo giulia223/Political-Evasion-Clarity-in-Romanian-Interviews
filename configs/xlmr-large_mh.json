@@ -1,0 +1,27 @@
+{
+  "backbone": "FacebookAI/xlm-roberta-large",
+  "lr": 1e-05,
+  "weight_decay": 0.01,
+  "warmup_ratio": 0.1,
+  "epochs": 15,
+  "patience": 3,
+  "batch_examples": 16,
+  "batch_chunks": 8,
+  "eval_batch_chunks": 32,
+  "precision": "auto",
+  "gradient_checkpointing": true,
+  "pooling": "max",
+  "dropout": 0.1,
+  "seed": 42,
+  "chunk": {
+    "max_length": 512,
+    "q_cap": 192,
+    "overlap": 128,
+    "max_chunks": 8
+  },
+  "loss": {
+    "kind": "ce",
+    "w_clarity": 1.0,
+    "w_evasion": 1.0
+  }
+}

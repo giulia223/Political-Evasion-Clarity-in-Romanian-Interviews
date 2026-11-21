@@ -31,8 +31,8 @@ bash scripts/package_src.sh        # -> dist/polero-src.zip (~1.5 MB)
 ### 4. Set the parameters (first code cell)
 | parameter | meaning |
 |---|---|
-| `CONFIG` | config file name in `configs/` without `.json`, e.g. `robert-large_mh` |
-| `FOLDS` | which folds to train, e.g. `"0,1,2,3,4,5,6"`; split a large run across sessions with `"0,1,2,3"` then `"4,5,6"` |
+| `CONFIG` | config name(s) in `configs/` without `.json`, e.g. `robert-large_mh`. Comma-separate several to run them in one session |
+| `FOLDS` | which folds to train, e.g. `"0,1,2,3,4,5,6"`. Every (config, fold) pair is one job, and the GPUs take jobs from a shared queue. Split a large run across sessions with `"0,1,2,3"` then `"4,5,6"` |
 | `SMOKE` | `True` = a tiny offline model that only checks the setup (about 2–3 minutes including installs) |
 | `INSTALL` | `"pinned"` (default). If pip fails on Kaggle's image, use `"minimal"` (transformers, accelerate and sentencepiece only) |
 
@@ -58,11 +58,32 @@ bash scripts/package_src.sh        # -> dist/polero-src.zip (~1.5 MB)
    - `predict` writes a validated submission to `submissions/`.
 3. Tell your agent the run finished. It verifies the artifacts and updates STATUS.md.
 
+## Recipe: T2.6 backbone screening
+Three backbones on folds 0–2 (9 jobs) in **one** session on T4×2.
+1. Package and upload as in steps 1–2, then **run `SMOKE = True` once** with the same `CONFIG`.
+2. Set the parameters:
+   ```python
+   CONFIG = "robert-large_mh,xlmr-large_mh,ro-bert-base_mh"
+   FOLDS = "0,1,2"
+   SMOKE = False
+   ```
+3. Run **Save & Run All (Commit)**. Download `robert-large_mh+xlmr-large_mh+ro-bert-base_mh_folds0-1-2.zip` from Output.
+4. Locally:
+   ```bash
+   unzip robert-large_mh+xlmr-large_mh+ro-bert-base_mh_folds0-1-2.zip -d artifacts/
+   for e in robert-large_mh xlmr-large_mh ro-bert-base_mh; do
+     .venv/bin/python -m polero.evaluate artifacts/$e/oof.csv --note "T2.6 screen folds 0-2"
+   done
+   ```
+   Then tell your agent that T2.6 is downloaded. It compares the backbones and records the decision.
+- If the session ends early, the finished jobs are still in the zip. Rerun only the missing (config, fold) pairs.
+
 ## Expected runtime (estimate, not yet measured)
 The first real run measures this, and its numbers should replace these rough guesses.
 - **RoBERT-large on a T4:** about 1–3 minutes per epoch per fold, plus about 20 seconds of evaluation. Most inputs are a single short chunk (median about 113 tokens, docs/EDA.md).
 - **A fold:** with early stopping, 5–10 epochs.
 - **All 7 folds on T4×2:** about 1–3 hours. This fits in one session.
+- **T2.6 screening (3 backbones × 3 folds):** about 1.5–4 hours on T4×2. XLM-R-large is the slowest; the base model is about 3× faster.
 
 ## Troubleshooting
 | symptom | fix |

@@ -59,3 +59,24 @@ def test_runner_rejects_wrong_folds(package, tmp_path):
     r = subprocess.run([sys.executable, str(repo / "scripts" / "kaggle_run.py"), "--src", str(repo), "--config",
                         "robert-large_mh", "--smoke", "--install", "none", "--folds", "0"], capture_output=True, text=True)
     assert r.returncode != 0 and "does not match the fixed folds" in r.stderr
+
+
+def test_runner_queues_several_configs(package, tmp_path):
+    repo = tmp_path / "polero"
+    zipfile.ZipFile(package).extractall(repo)
+    r = subprocess.run([sys.executable, str(repo / "scripts" / "kaggle_run.py"), "--src", str(repo), "--config",
+                        "robert-large_mh,ro-bert-base_mh", "--folds", "0,1", "--smoke", "--install", "none"],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout[-2000:] + r.stderr[-2000:]
+    assert "4 jobs (2 configs x 2 folds)" in r.stdout
+    names = zipfile.ZipFile(tmp_path / "robert-large_mh_smoke+ro-bert-base_mh_smoke_folds0-1.zip").namelist()
+    for exp in ("robert-large_mh_smoke", "ro-bert-base_mh_smoke"):
+        assert f"{exp}/oof.csv" in names and f"{exp}/run_{exp[:-6]}_fold1.log" in names
+
+
+def test_runner_rejects_unknown_config(package, tmp_path):
+    repo = tmp_path / "polero"
+    zipfile.ZipFile(package).extractall(repo)
+    r = subprocess.run([sys.executable, str(repo / "scripts" / "kaggle_run.py"), "--src", str(repo), "--config",
+                        "nope", "--install", "none"], capture_output=True, text=True)
+    assert r.returncode != 0 and "unknown config" in r.stderr
