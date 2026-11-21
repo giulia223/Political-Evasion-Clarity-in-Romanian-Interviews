@@ -174,6 +174,18 @@ Agents may accept decisions inside their task's scope on their own, such as hype
   - **Default config** `configs/robert-large_mh.json`: lr 2e-5 (the paper's RoBERT-large rate), batch 16, 15 epochs, patience 3, activation checkpointing on.
 - Consequences: the fp16 and bf16 paths only run on GPU, so they are first exercised in T2.5/T2.6.
 
+## D-025: Decoder and bias-tuning design; selection by nested OOF
+- Date: 2026-11-21 · Task: T2.4 · Status: Accepted · Decided by: agent (claude-raluca)
+- Decision:
+  - **Decoders:** three, all consistent by construction:
+    - (a) argmax evasion, then mapped up;
+    - (b) argmax of the summed group probabilities for clarity, then the best evasion label within that group;
+    - (c) like b, with the group scores blended `alpha·p_clarity_head + (1-alpha)·grouped`.
+  - **Bias tuning:** per-class offsets on log p_ev, with Explicit fixed at 0. Coordinate ascent over [-3, 3] (25 points, ≤ 3 rounds) maximises evasion F1 + clarity F1, the two submitted scores.
+  - **Honest estimates:** every tuned setting (bias, alpha) is scored with **nested** OOF, where fold k's parameters are fitted on the other 6 folds.
+  - **Default selection:** `--decoder auto` picks the best nested row. The final parameters are refitted on all OOF rows and applied to test.
+- Consequences: the D-003 consistency requirement holds for every option, so no user decision about inconsistent decoders is needed. Bias tuning uses train-fold labels only, never test (CLAUDE.md §2.5).
+
 ---
 
 ## Open questions for the user
