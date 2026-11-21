@@ -1,0 +1,1 @@
+{"backbone": "FacebookAI/xlm-roberta-large", "lr": 1e-5, "head_lr": 1e-4, "epochs": 10, "patience": 3, "batch_chunks": 16, "accum": 1, "pooling": "max", "llrd": 0.95}

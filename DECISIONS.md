@@ -117,3 +117,23 @@ Agents may accept decisions inside their task's scope on their own, such as hype
 - ~~Q-003~~ Answered: Kaggle GPU (D-013).
 - ~~Q-004~~ Answered: existing GitHub repo (D-014).
 - ~~Q-005~~ Answered: yes, commit them (D-016).
+
+## D-018: Giulia's version moves fast: lighter process, my own plan
+- Date: 2026-11-21 · Task: all · Status: Accepted · Decided by: user (told the agent to move fast, change the roadmap where better, no approval needed for code)
+- Decision: follow docs/PLAN_giulia.md. EDA is folded into the training log and the tokenizer check; no separate EDA.md. Package installs needed for this version are covered by the user's blanket go-ahead (none so far beyond requirements.txt).
+- Consequences: STATUS.md is updated at milestones, not per micro-step.
+
+## D-019: LLM few-shot (T3.4) moved ahead of encoder tuning; served with Ollama on Kaggle
+- Date: 2026-11-21 · Task: T3.4 · Status: Accepted · Decided by: agent (user go-ahead D-018)
+- Context: the paper's best open LLM (Qwen3.6-35B-A3B few-shot) scores E .682 vs .545 for the best encoder; this machine has no GPU.
+- Decision: polero/llm.py talks to a localhost OpenAI-compatible server (Ollama in notebooks/kaggle_llm.ipynb; vLLM/llama-server also work). Few-shot block is fixed and drawn from fold 0 only, so outputs on folds 1-6 are valid OOF for stacking. n self-consistency samples → vote-share probabilities. Instructions in English with Romanian Q/A (reasoning models reason better in English; ablate later).
+- Alternatives: LoRA-SFT of a 7-14B decoder (SemEval "Evaluators" got only E .54, too costly on free GPUs).
+
+## D-020: Transcript label prior feature (leakage-safe)
+- Date: 2026-11-21 · Task: T3.2 · Status: Accepted · Decided by: agent
+- Decision: features.transcript_prior gives each row the smoothed label distribution of the *other* rows of the same url whose labels are allowed (training-fold rows only; a row never sees its own label). For test rows the same training-fold rows are used. Mirrors the test situation (182/194 test transcripts have labelled train turns).
+
+## D-021: Decoding may produce inconsistent clarity/evasion pairs if OOF prefers it
+- Date: 2026-11-21 · Task: T2.4 · Status: Accepted · Decided by: agent (user go-ahead D-018); refines D-003
+- Context: the subtasks are scored independently; forcing consistency can cost clarity F1.
+- Decision: evaluate (a) argmax-map-up, (b) group decoder, and (c) separate nested-CV bias tuning for evasion (9 biases) and clarity groups (3 biases). Pick per subtask by OOF; report the inconsistent-pair count.
