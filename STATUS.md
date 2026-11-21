@@ -16,7 +16,7 @@ Update this file when you claim a task, finish it, or get blocked (rules in CLAU
 | ID | Task | Status | Owner | Updated | Notes / result |
 |---|---|---|---|---|---|
 | T0.1 | Environment and dependencies | DONE | setup | 2026-11-21 | torch 2.15.0+cpu, transformers 5.23.0 and others (D-015). `tests/test_env.py` passes |
-| T0.2 | Repository skeleton | TODO | – | 2026-11-21 | Git repo exists (D-014) |
+| T0.2 | Repository skeleton | IN_PROGRESS | claude-setup | 2026-11-21 | Git repo exists (D-014) |
 | T0.3 | Labels and submission writer/validator | TODO | – | 2026-11-21 | |
 | T0.4 | Data loading and fixed CV folds | TODO | – | 2026-11-21 | |
 | T0.5 | Metrics and OOF evaluation | TODO | – | 2026-11-21 | |
@@ -48,3 +48,4 @@ Append-only, newest at the bottom. Format: `YYYY-MM-DD HH:MM · <agent> · <task
 - 2026-11-21 · setup · none · Installed skills (D-010), created `.venv` (D-009). Built and removed the TF-IDF baseline (D-007). Wrote the roadmap, CLAUDE.md, DECISIONS.md, STATUS.md and docs/RESEARCH.md.
 - 2026-11-21 · setup · T0.1 · The user approved the installs. Pinned the stack in requirements.txt (D-015). tests/test_env.py: 2 passed. Recorded the user's answers as D-011 to D-014. T3.3 dropped, T3.4 moved to Kaggle. Initial commit pushed to GitHub.
 - 2026-11-21 · setup · none · The user asked to commit the data CSVs (D-016).
+- 2026-11-21 · claude-setup · T0.2 · Claimed.
