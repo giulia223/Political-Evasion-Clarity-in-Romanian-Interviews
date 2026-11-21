@@ -1,0 +1,11 @@
+# Local dev (CPU). Install torch from the CPU index first:
+#   .venv/bin/pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu
+# On Kaggle/Colab, keep the preinstalled CUDA torch and install the rest.
+torch==2.15.0
+transformers==5.23.0
+sentencepiece==0.2.3
+accelerate==1.16.0
+scikit-learn==1.9.1
+pandas==3.1.1
+numpy==2.5.5
+pytest==9.2.0
