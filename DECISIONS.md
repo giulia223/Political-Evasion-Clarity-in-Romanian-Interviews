@@ -163,6 +163,17 @@ Agents may accept decisions inside their task's scope on their own, such as hype
 - Evidence: on 300 real train rows, the output is identical to `tok(q, a)` for every single-chunk row, for RoBERT-large, ro-BERT-base-cased and XLM-R-large. Full-data chunk counts match docs/EDA.md.
 - Consequences: the question appears in every chunk. The paper's chunk-once variant stays an ablation in T3.2(d).
 
+## D-024: Training-loop design details
+- Date: 2026-11-21 · Task: T2.3 · Status: Accepted · Decided by: agent (claude-raluca)
+- Decision:
+  - **Batching:** micro-batches are capped by chunk count (`batch_chunks`, default 8 at 512 tokens). Gradients accumulate until `batch_examples` (16) examples, and each micro-batch's loss is weighted by its share of examples.
+  - **Ordering:** training order is shuffled per epoch with seed + fold, then sorted by length within windows of 64 to cut padding.
+  - **Early-stopping score:** validation evasion macro-F1 + mapped clarity macro-F1, the two quantities we submit. Ties are not improvements. The best weights are kept in memory, and checkpoints are not written.
+  - **Class weights**, when enabled through `loss.class_weight_power`, are computed from each fold's training rows only.
+  - **Smoke backbone:** a deterministic WordPiece vocabulary built from the smoke rows. HF `WordPieceTrainer` made runs non-reproducible, because vocab ids changed between builds.
+  - **Default config** `configs/robert-large_mh.json`: lr 2e-5 (the paper's RoBERT-large rate), batch 16, 15 epochs, patience 3, activation checkpointing on.
+- Consequences: the fp16 and bf16 paths only run on GPU, so they are first exercised in T2.5/T2.6.
+
 ---
 
 ## Open questions for the user
