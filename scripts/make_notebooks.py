@@ -40,7 +40,7 @@ Set `CONFIG` below, run all cells, then download `/kaggle/working/<exp>.zip` and
 """),
     ("code", SETUP),
     ("code", """
-CONFIG = "configs/robert-large_mh.json"   # <- change per experiment
+CONFIG = "configs/robert-large_mh_fast.json"   # fast (~1h); full: configs/robert-large_mh.json
 SMOKE = False                              # True = quick CPU/GPU sanity run
 EXP = os.path.splitext(os.path.basename(CONFIG))[0] + ("_smoke" if SMOKE else "")
 n_gpu = max(1, torch.cuda.device_count())

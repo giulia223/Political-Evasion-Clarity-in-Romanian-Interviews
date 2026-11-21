@@ -1,0 +1,1 @@
+{"backbone": "readerbench/RoBERT-large", "lr": 2e-5, "head_lr": 1e-4, "epochs": 5, "patience": 2, "batch_chunks": 16, "accum": 1, "pooling": "max", "max_len": 384, "stride": 96}
