@@ -29,7 +29,7 @@ Update this file when you claim a task, finish it, or get blocked (rules in CLAU
 | T2.3 | Training loop with CV | DONE | claude-raluca | 2026-11-21 | `python -m polero.train --config configs/robert-large_mh.json [--folds] [--smoke]`. Smoke: 7 folds in ~6 s on CPU. GPU/AMP path not yet run (T2.5/T2.6) |
 | T2.4 | Prediction, ensembling, decoding | DONE | claude-raluca | 2026-11-21 | `python -m polero.predict --exp <id> [--decoder auto]`: decoders a/b/c and nested bias tuning on OOF, validated submission. Real decoder table pending first GPU run |
 | T2.5 | GPU runner notebook and runbook | DONE | claude-raluca | 2026-11-21 | notebooks/kaggle_train.ipynb + scripts/kaggle_run.py (folds split across GPUs) + scripts/package_src.sh + docs/GPU_RUNBOOK.md. Smoke-tested from the zip on CPU. First real Kaggle run happens in T2.6 |
-| T2.6 | Backbone screening (GPU) | TODO | – | 2026-11-21 | |
+| T2.6 | Backbone screening (GPU) | IN_PROGRESS | claude-raluca | 2026-11-21 | |
 | T2.7 | Full 7-fold run (GPU) | TODO | – | 2026-11-21 | |
 | T2.8 | First real submission | TODO | – | 2026-11-21 | |
 | T3.1 | Loss/imbalance ablation (GPU) | TODO | – | 2026-11-21 | |
@@ -75,3 +75,4 @@ Append-only, newest at the bottom. Format: `YYYY-MM-DD HH:MM · <agent> · <task
 - 2026-11-21 · claude-raluca · T2.4 · Done. polero.ensemble: blend (weighted, aligned on datapointID), load_test (fold average), decode a/b/c (consistent by construction), a fast sklearn-equivalent macro-F1, per-class log-prob bias tuning (coordinate ascent, Explicit fixed at 0), alpha tuning for c, nested_predict (parameters from the other folds only), compare_decoders. polero.predict CLI: decoder table plus test-vs-train prediction distribution, write_submission and validate, --log to RESULTS.md, --decoder auto picks the best nested row. Verified end to end on a full-size smoke experiment. Real numbers come after T2.7. Full suite: 92 passed (D-025).
 - 2026-11-21 · claude-raluca · T2.5 · Claimed.
 - 2026-11-21 · claude-raluca · T2.5 · Done. package_src.sh: zip of the working-tree code, configs, scripts, data and artifacts/folds.csv, with VERSION (commit, +dirty flag). kaggle_run.py (stdlib only): pinned or minimal install keeping CUDA torch, fold-fingerprint check, one training process per GPU (--no-merge), then merge, evaluate and zip. polero.train gained --no-merge and per-fold-group log files. The notebook is a thin wrapper and auto-detects the dataset zip or an unpacked directory. EXPECTED_FINGERPRINT moved into polero.folds. Runtime in the runbook is an estimate until measured. Full suite: 95 passed (D-026).
+- 2026-11-21 · claude-raluca · T2.6 · Claimed.
