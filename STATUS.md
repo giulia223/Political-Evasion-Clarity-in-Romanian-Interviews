@@ -25,7 +25,7 @@ Update this file when you claim a task, finish it, or get blocked (rules in CLAU
 | T1.1 | EDA with tokenizers | DONE | claude-raluca | 2026-11-21 | docs/EDA.md. 96% of pairs ≤512 tokens. Recommended: question cap 192, overlap 128, max_chunks 8, keep comma diacritics, map –→- and ť→ț |
 | T1.2 | Text normalization | DONE | claude-raluca | 2026-11-21 | `polero.text.normalize`, mode `clean` for all backbones. ro-BERT UNK 0.041% → 0.001%. Diacritics kept |
 | T2.1 | Sliding-window encoding | DONE | claude-raluca | 2026-11-21 | `polero.chunking`. RoBERT-large on train+test: 3,767 chunks, 124 rows multi-chunk, 2 capped at 8, 59 questions truncated |
-| T2.2 | Multi-head model | TODO | – | 2026-11-21 | |
+| T2.2 | Multi-head model | IN_PROGRESS | claude-raluca | 2026-11-21 | |
 | T2.3 | Training loop with CV | TODO | – | 2026-11-21 | |
 | T2.4 | Prediction, ensembling, decoding | TODO | – | 2026-11-21 | |
 | T2.5 | GPU runner notebook and runbook | TODO | – | 2026-11-21 | |
@@ -67,3 +67,4 @@ Append-only, newest at the bottom. Format: `YYYY-MM-DD HH:MM · <agent> · <task
 - 2026-11-21 · claude-raluca · T1.2 · Done. polero.text: normalize(text, mode) with raw / clean / clean+quotes, BACKBONE_MODE and mode_for(). clean maps dashes to '-', ť to ț, collapses all whitespace, and never touches diacritics. Measured in docs/EDA.md §8: clean for every backbone (D-022). Full suite: 46 passed.
 - 2026-11-21 · claude-raluca · T2.1 · Claimed.
 - 2026-11-21 · claude-raluca · T2.1 · Done. polero.chunking: ChunkConfig (512 / q_cap 192 / overlap 128 / max_chunks 8), PairTemplate (special tokens learned from the tokenizer), encode_pair, encode_examples (applies T1.2 normalization), collate_chunks (per-batch padding plus example_index). Built manually rather than with return_overflowing_tokens (D-023). Matches tokenizer pair encoding exactly on single-chunk rows for all 3 tokenizers. Full-data counts match the EDA. Full suite: 57 passed.
+- 2026-11-21 · claude-raluca · T2.2 · Claimed.
