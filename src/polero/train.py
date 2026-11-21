@@ -153,6 +153,8 @@ def train_fold(k, df, chunks, cfg, out_dir, device, log, encoder_factory=None, t
     te = np.where(df["is_test"])[0]
     if cfg.get("smoke"):
         tr, va, te = tr[:32], va[:16], te[:8]
+    elif cfg.get("limit"):  # real model on a few rows: end-to-end check before a GPU session
+        tr, va, te = tr[: cfg["limit"]], va[: cfg["limit"] // 2], te[: cfg["limit"] // 4]
     y_ev = torch.tensor([EV2ID[v] for v in df["evasion_label"].iloc[tr]])
     y_cl = torch.tensor([CL2ID[CLARITY_OF[v]] for v in df["evasion_label"].iloc[tr]])
     encoder = encoder_factory() if encoder_factory else None
@@ -301,10 +303,16 @@ def main(argv=None):
     p.add_argument("--device", default=None)
     p.add_argument("--smoke", action="store_true")
     p.add_argument("--exp", default=None, help="override experiment id (default: config file stem)")
+    p.add_argument("--limit", type=int, default=None, help="debug: use only this many training rows")
+    p.add_argument("--epochs", type=int, default=None)
     a = p.parse_args(argv)
     cfg = dict(DEFAULTS)
     cfg.update(json.loads(Path(a.config).read_text()))
     cfg["smoke"] = a.smoke
+    if a.limit:
+        cfg["limit"] = a.limit
+    if a.epochs:
+        cfg["epochs"] = a.epochs
     exp_id = a.exp or Path(a.config).stem + ("_smoke" if a.smoke else "")
     device = torch.device(a.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     folds = [int(x) for x in a.folds.split(",")]
