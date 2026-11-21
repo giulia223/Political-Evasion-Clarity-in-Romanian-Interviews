@@ -19,7 +19,7 @@ Update this file when you claim a task, finish it, or get blocked (rules in CLAU
 |---|---|---|---|---|---|
 | T0.1 | Environment and dependencies | DONE | setup | 2026-11-21 | torch 2.15.0+cpu, transformers 5.23.0 and others (D-015). `tests/test_env.py` passes |
 | T0.2 | Repository skeleton | DONE | claude-setup | 2026-11-21 | `pip install -e .` works. Data checksums in tests/data_checksums.json. 4 tests pass |
-| T0.3 | Labels and submission writer/validator | TODO | – | 2026-11-21 | |
+| T0.3 | Labels and submission writer/validator | IN_PROGRESS | claude-raluca | 2026-11-21 | |
 | T0.4 | Data loading and fixed CV folds | TODO | – | 2026-11-21 | |
 | T0.5 | Metrics and OOF evaluation | TODO | – | 2026-11-21 | |
 | T1.1 | EDA with tokenizers | TODO | – | 2026-11-21 | |
@@ -53,3 +53,5 @@ Append-only, newest at the bottom. Format: `YYYY-MM-DD HH:MM · <agent> · <task
 - 2026-11-21 · claude-setup · T0.2 · Claimed.
 - 2026-11-21 · claude-setup · T0.2 · Done: pyproject, pytest.ini, src/polero, folder layout, .gitattributes (CSV byte-identical), checksum test. Full suite: 4 passed. Added docs/TEAM.md (3 tracks) and a Track column.
 - 2026-11-21 · claude-setup · none · The user dropped the 3-track split. Each member builds their own version on `member/<name>` (D-017). Removed docs/TEAM.md and the Track column.
+- 2026-11-21 · claude-raluca · none · Started Raluca's version on branch `member/raluca`.
+- 2026-11-21 · claude-raluca · T0.3 · Claimed.
